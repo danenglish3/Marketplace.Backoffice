@@ -1,0 +1,18 @@
+@import "../imports.scss";
+
+.footer {
+    border-top: 1px solid grey;
+    padding: 25px 0;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: $footer-height;
+
+    ul {
+        display: flex;        
+        grid-gap: 32px;
+        gap: 32px;
+    }
+}

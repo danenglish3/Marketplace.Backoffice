@@ -6,6 +6,9 @@ export default function Header() {
         <div className={styles.header}>
             <ul>
                 <li>
+                    <a className={styles.active}>Dashboard</a>
+                </li>
+                <li>
                     <a>Marketplace</a>
                 </li>
                 <li>

@@ -1,3 +1,11 @@
 .sidenav {
+    width: 300px;
+    border-right: 1px solid grey;
+    height: 100%;
+    padding: 20px;
 
+    .navLink {
+        width: 100%;
+        padding: 10px;
+    }
 }

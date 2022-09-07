@@ -1,6 +1,7 @@
 import '../styles/globals.css'
 import Head from 'next/head'
 import Header from '../components/Header'
+import Footer from '../components/Footer'
 
 function Backoffice({ Component, pageProps }) {
 	return (
@@ -12,7 +13,10 @@ function Backoffice({ Component, pageProps }) {
 			</Head>
 			<div className='container mx-auto'>
 				<Header />
-				<Component {...pageProps} />
+				<main className='main'>
+					<Component {...pageProps} />
+				</main>
+				<Footer />
 			</div>
 		</>
 	)

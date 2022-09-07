@@ -1,8 +1,15 @@
+@import "../imports.scss";
+
 .header {
+    height: $header-height;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+
     display: flex;
     justify-content: space-between;
     padding: 50px 0 25px 0;
-    margin-bottom: 25px;
     border-bottom: 1px solid grey;
 
     ul {
@@ -12,6 +19,10 @@
 
         a {
             font-size: 40px;
+
+            &.active {
+                border-bottom: 1px solid black;
+            }
         }
     }
 
