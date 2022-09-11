@@ -1,16 +1,38 @@
 @import "../imports.scss";
 
 .header {
-    height: $header-height;
     position: absolute;
     top: 0;
     right: 0;
     left: 0;
-
+    height: 75px;
     display: flex;
-    justify-content: space-between;
-    padding: 50px 0 25px 0;
-    border-bottom: 1px solid grey;
+    padding: 15px 0;
+    color: white;
+    background-color: #518CA3;
+
+    .left {
+        min-width: 250px;
+        padding: 0 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 25px;
+
+        .menuToggle {
+            height: 20px;
+            width: 20px;
+        }
+    }
+
+    .right {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        align-content: center;
+        width: 100%;
+        padding: 0 30px;
+    }
 
     ul {
         display: flex;
@@ -18,19 +40,19 @@
         gap: 32px;
 
         a {
-            font-size: 40px;
+            font-size: 25px;
 
             &.active {
-                border-bottom: 1px solid black;
+                border-bottom: 1px solid white;
             }
         }
     }
 
     .profile {
-        border: 1px solid black;
+        border: 1px solid white;
         border-radius: 50px;
-        height: 50px;
-        width: 50px;
+        height: 35px;
+        width: 35px;
         display: flex;
         justify-content: center;
         align-items: center;
