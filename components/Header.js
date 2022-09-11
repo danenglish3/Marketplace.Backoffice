@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/components/Header.module.scss'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/router'
 
-export default function Header() {
+export default function Header(props) {
     const router = useRouter();
     const [isSideNavOpen, setIsSideNavOpen] = useState(true);
     const [activePage, setActivePage] = useState("");
@@ -25,7 +23,6 @@ export default function Header() {
         <div className={styles.header}>
             <div className={styles.left}>
                 <span>MP</span>
-                <a onClick={toggleMenu} className={styles.menuToggle}><FontAwesomeIcon icon={faBars}/></a>
             </div>
             <div className={styles.right}>
                 <ul>

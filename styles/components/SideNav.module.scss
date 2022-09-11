@@ -2,6 +2,37 @@
     width: 250px;
     height: 100%;
     background-color: #3d4f5a;
+    position: relative;
+
+    &.open {
+
+    }
+
+    &.collapsed {
+        width: 50px;
+
+        ul {
+            width: 50px;
+
+            span {
+                display: none;
+            }
+        }
+
+        .menuToggle {
+            right: -185px;
+        }
+    }
+
+    .menuToggle {
+        position: absolute;
+        top: -50px;
+        right: 15px;
+        z-index: 2;
+        width: 20px;
+        height: 20px;
+        color: white;
+    }
 
     ul {
         width: 250px;

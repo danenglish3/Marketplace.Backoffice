@@ -6,7 +6,7 @@ import { faGear } from '@fortawesome/free-solid-svg-icons'
 import { faChartLine } from '@fortawesome/free-solid-svg-icons'
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
 
-export default function Marketplace() {
+export default function Marketplace(props) {
     let navItems = [
         {title: 'Categories', icon: faCartShopping},
         {title: 'Products', icon: faJoint},
