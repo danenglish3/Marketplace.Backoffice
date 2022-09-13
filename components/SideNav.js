@@ -13,6 +13,10 @@ export default function SideNav(props) {
         }
 
         setActiveNav(index);
+
+        if (props.handleNavChange != null && typeof props.handleNavChange == "function") {
+            props.handleNavChange(index)
+        }
     }
 
     const menuToggle = () => {
@@ -25,7 +29,7 @@ export default function SideNav(props) {
             <ul>
                 {props.navItems.map((item, ii) => {
                     return <li key={ii} onClick={handleClick.bind(this, ii)}>
-                                <a className={ii === activeNav ? styles.active : ''}>
+                                <a className={`${ii === activeNav ? styles.active : ''}`}>
                                     <span>{item.title}</span>
                                     <FontAwesomeIcon className={styles.icon} icon={item.icon}/>
                                 </a>

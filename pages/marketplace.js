@@ -1,4 +1,4 @@
-import SideNav from '../components/Sidenav'
+import React, { useState } from 'react';
 import styles from '../styles/Marketplace.module.scss'
 
 import { faJoint } from '@fortawesome/free-solid-svg-icons'
@@ -6,7 +6,13 @@ import { faGear } from '@fortawesome/free-solid-svg-icons'
 import { faChartLine } from '@fortawesome/free-solid-svg-icons'
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
 
+import SideNav from '../components/Sidenav'
+import Categories from '../components/content/Categories'
+import Products from '../components/content/Products'
+
 export default function Marketplace(props) {
+    const [activeSection, setActiveSection] = useState("Categories");
+
     let navItems = [
         {title: 'Categories', icon: faCartShopping},
         {title: 'Products', icon: faJoint},
@@ -14,13 +20,20 @@ export default function Marketplace(props) {
         {title: 'Settings', icon: faGear},
     ]; 
 
+    const sectionChange = (index) => {
+        let section = navItems[index].title;
+        setActiveSection(section);
+    }
+
     return (
         <div className={styles.marketplace}>
             <SideNav 
                 navItems={navItems}
+                handleNavChange={sectionChange}
             />
 			<div className={styles.content}>
-                <h1>Marketplace</h1>
+                {activeSection === "Categories" && <Categories />}
+                {activeSection === "Products" && <Products />}
 			</div>
         </div>
     )
