@@ -1,9 +1,54 @@
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+
 import '../styles/globals.css'
 import Head from 'next/head'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import tokenService from '../utils/tokenService';
 
 function Backoffice({ Component, pageProps }) {
+	const router = useRouter();
+    const [accessToken, setAccessToken] = useState({
+        token: "",
+        expiresIn: ""
+    });
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [uid, setUid] = useState(-1);
+
+	pageProps.auth = pageProps.auth ?? {};
+    pageProps.auth.isAuthenticated = isAuthenticated;
+    pageProps.auth.accessToken = accessToken;
+    pageProps.auth.setAccessToken = setAccessToken;
+    pageProps.auth.uid = uid;
+
+	// useEffect(() => {
+    //     if (isLoading) {
+    //         let cb = function (success, response) {
+    //             if (success) {
+    //                 setAccessToken(response.data.accessToken);
+    //                 setUid(response.id);
+    //                 setIsAuthenticated(true);
+    //             } else {
+	// 				function generateTokenCallback(generateSuccess, data) {
+	// 					if (generateSuccess) {
+	// 						pageProps.auth.setAccessToken(data.accessToken);
+	// 					} else {
+	// 						debugger;
+	// 					}
+	// 				}
+
+	// 				tokenService.generate(null, 'dev@dev', 'devdev', generateTokenCallback);
+    //             }
+
+    //             setIsLoading(false);
+    //         };
+
+    //         tokenService.refresh(cb);
+    //     }
+    // });
+
 	return (
 		<>
 			<Head>
@@ -14,7 +59,7 @@ function Backoffice({ Component, pageProps }) {
 			<div className='mx-auto'>
 				<Header />
 				<main className='main'>
-					<Component {...pageProps} />
+					{!isLoading && <Component {...pageProps} />}
 				</main>
 				<Footer />
 			</div>

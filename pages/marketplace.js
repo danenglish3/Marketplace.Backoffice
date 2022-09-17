@@ -32,7 +32,7 @@ export default function Marketplace(props) {
                 handleNavChange={sectionChange}
             />
 			<div className={styles.content}>
-                {activeSection === "Categories" && <Categories />}
+                {activeSection === "Categories" && <Categories  {...props}/>}
                 {activeSection === "Products" && <Products />}
 			</div>
         </div>
