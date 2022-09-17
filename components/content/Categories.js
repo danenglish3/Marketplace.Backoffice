@@ -1,7 +1,10 @@
 import styles from '../../styles/components/content/Categories.module.scss'
 import React, { useState, useEffect } from 'react';
 import apiService from '../../utils/apiService';
-import { faPersonWalkingArrowLoopLeft } from '@fortawesome/free-solid-svg-icons';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faMinus } from '@fortawesome/free-solid-svg-icons'
 
 export default function Categories(props) {
     const [categories, setCategories] = useState([]);
@@ -11,9 +14,22 @@ export default function Categories(props) {
     const [activeIndex, setActiveIndex] = useState(0);
     const [activeMain, setActiveMain] = useState(0);
     const [activeSecondary, setActiveSecondary] = useState(0);
+    const [chilldMap, setChildMap] = useState([]);
 
     useEffect(() => {
-        setCategories([{"id":1,"name":"Electronics","systemName":"Electronics","parent":null},{"id":4,"name":"Mobile phones","systemName":"MobilePhones","parent":null},{"id":5,"name":"Plants","systemName":"Plants","parent":null},{"id":6,"name":"Indoor plants","systemName":"IndoorPlants","parent":{"id":5,"name":"Plants","systemName":"Plants","parent":null}},{"id":7,"name":"Outdoor plants","systemName":"OutdoorPlants","parent":{"id":5,"name":"Plants","systemName":"Plants","parent":null}},{"id":8,"name":"TVs","systemName":"Tvs","parent":{"id":1,"name":"Electronics","systemName":"Electronics","parent":null}},{"id":9,"name":"iPhone","systemName":"Iphone","parent":{"id":4,"name":"Mobile phones","systemName":"MobilePhones","parent":null}},{"id":10,"name":"Samsung","systemName":"Samsung","parent":{"id":4,"name":"Mobile phones","systemName":"MobilePhones","parent":null}}]);
+        let hasChildrenList = [];
+        let cat = [{"id":1,"name":"Electronics","systemName":"Electronics","parent":null},{"id":4,"name":"Mobile phones","systemName":"MobilePhones","parent":null},{"id":5,"name":"Plants","systemName":"Plants","parent":null},{"id":6,"name":"Indoor plants","systemName":"IndoorPlants","parent":{"id":5,"name":"Plants","systemName":"Plants","parent":null}},{"id":7,"name":"Outdoor plants","systemName":"OutdoorPlants","parent":{"id":5,"name":"Plants","systemName":"Plants","parent":null}},{"id":8,"name":"TVs","systemName":"Tvs","parent":{"id":1,"name":"Electronics","systemName":"Electronics","parent":null}},{"id":9,"name":"iPhone","systemName":"Iphone","parent":{"id":4,"name":"Mobile phones","systemName":"MobilePhones","parent":null}},{"id":10,"name":"Samsung","systemName":"Samsung","parent":{"id":4,"name":"Mobile phones","systemName":"MobilePhones","parent":null}}];
+
+        cat.forEach(element => {
+            if (element.parent != null) {
+                if (!hasChildrenList.includes(element.parent.id)) {
+                    hasChildrenList.push(element.parent.id);
+                }
+            }
+        });
+
+        setChildMap(hasChildrenList);
+        setCategories(cat);
 
         // if (loading) {
         //     let cb = function (success, response) {
@@ -48,6 +64,7 @@ export default function Categories(props) {
                 categories={categories.filter(a => {return a.parent == null})}
                 ai={activeIndex}
                 activeMainIndex={activeMain}
+                hasChildMap={chilldMap}
             />
             {secondTeirCategories.length > 0 && <CategoriesNav
                 classStyle='secondary'
@@ -55,13 +72,11 @@ export default function Categories(props) {
                 categories={secondTeirCategories}
                 ai={activeIndex}
                 activeSecondaryIndex={activeMain}
+                hasChildMap={chilldMap}
             />}
-            {thirdTeirCategories.length > 0 && <CategoriesNav
-                classStyle='third'
-                onClick={categorySelection} 
-                categories={thirdTeirCategories}
-                ai={activeIndex}
-            />}
+            <div className={styles.main}>
+
+            </div>
         </div>
     )
 }
@@ -76,9 +91,13 @@ function CategoriesNav(props) {
     }
 
     return (
-        <div key={props.activeIndex} className={`${styles.nav} ${typeMap[props.classStyle]}`}>
+        <div key={props.activeIndex} className={`${styles.nav}`}>
             <ul>
+                {props.classStyle === 'main' && 
+                    <li><a onClick={() => props.onClick(0, props.classStyle)} className={props.ai == 0 ? styles.active : ''}>All</a></li>}
                 {categories.map((item) => {
+                    let hasChild = props.hasChildMap.includes(item.id);
+
                     return <li key={`cat-0-${item.id}`}>
                         <a onClick={() => props.onClick(item.id, props.classStyle)} 
                             className={`${item.id == props.ai || 
@@ -87,6 +106,7 @@ function CategoriesNav(props) {
                                     ? styles.active : ''
                                 }`}>
                             <span>{item.name}</span>
+                            <FontAwesomeIcon className={styles.icon} icon={hasChild ? faPlus : faMinus}/>
                     </a></li>
                 })}
             </ul>
