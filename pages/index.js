@@ -1,5 +1,5 @@
 import styles from '../styles/Home.module.scss'
-import SideNav from '../components/Sidenav'
+import SideNav from '../components/layout/Sidenav'
 
 import { faGear } from '@fortawesome/free-solid-svg-icons'
 

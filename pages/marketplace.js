@@ -6,7 +6,7 @@ import { faGear } from '@fortawesome/free-solid-svg-icons'
 import { faChartLine } from '@fortawesome/free-solid-svg-icons'
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
 
-import SideNav from '../components/Sidenav'
+import SideNav from '../components/layout/Sidenav'
 import Categories from '../components/content/Categories'
 import Products from '../components/content/Products'
 

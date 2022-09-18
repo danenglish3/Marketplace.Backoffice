@@ -1,4 +1,4 @@
-import styles from '../styles/components/SideNav.module.scss'
+import styles from '../../styles/components/SideNav.module.scss'
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
