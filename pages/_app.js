@@ -14,7 +14,7 @@ function Backoffice({ Component, pageProps }) {
         expiresIn: ""
     });
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [uid, setUid] = useState(-1);
 
 	pageProps.auth = pageProps.auth ?? {};
@@ -23,31 +23,31 @@ function Backoffice({ Component, pageProps }) {
     pageProps.auth.setAccessToken = setAccessToken;
     pageProps.auth.uid = uid;
 
-	// useEffect(() => {
-    //     if (isLoading) {
-    //         let cb = function (success, response) {
-    //             if (success) {
-    //                 setAccessToken(response.data.accessToken);
-    //                 setUid(response.id);
-    //                 setIsAuthenticated(true);
-    //             } else {
-	// 				function generateTokenCallback(generateSuccess, data) {
-	// 					if (generateSuccess) {
-	// 						pageProps.auth.setAccessToken(data.accessToken);
-	// 					} else {
-	// 						debugger;
-	// 					}
-	// 				}
+	useEffect(() => {
+        if (isLoading) {
+            let cb = function (success, response) {
+                if (success) {
+                    setAccessToken(response.data.accessToken);
+                    setUid(response.id);
+                    setIsAuthenticated(true);
+                } else {
+					function generateTokenCallback(generateSuccess, data) {
+						if (generateSuccess) {
+							pageProps.auth.setAccessToken(data.accessToken);
+						} else {
+							debugger;
+						}
+					}
 
-	// 				tokenService.generate(null, 'dev@dev', 'devdev', generateTokenCallback);
-    //             }
+					tokenService.generate(null, 'dev@dev', 'devdev', generateTokenCallback);
+                }
 
-    //             setIsLoading(false);
-    //         };
+                setIsLoading(false);
+            };
 
-    //         tokenService.refresh(cb);
-    //     }
-    // });
+            tokenService.refresh(cb);
+        } 
+    }, []);
 
 	return (
 		<>

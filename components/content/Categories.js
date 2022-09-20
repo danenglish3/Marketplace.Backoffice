@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { faMinus } from '@fortawesome/free-solid-svg-icons'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 import Button from '../button';
 import { Input, stringify } from 'postcss';
 
@@ -23,33 +24,48 @@ export default function Categories(props) {
     const [newCategory, setNewCategory] = useState(baseNewCategoryObj);
     const [newCategoryIsShown, setNewCategoryIsShown] = useState(false);
     const [categoriesInTable, setCategoriesInTable] = useState([]);
+    const [isInUpdateState, setIsInUpdateState] = useState(false);
+    const [updateMessage, setUpdateMessage] = useState("");
 
     useEffect(() => {
-        let hasChildrenList = [];
-        let cat = [{"id":1,"name":"Electronics","systemName":"Electronics","parent":null},{"id":4,"name":"Mobile phones","systemName":"MobilePhones","parent":null},{"id":5,"name":"Plants","systemName":"Plants","parent":null},{"id":6,"name":"Indoor plants","systemName":"IndoorPlants","parent":{"id":5,"name":"Plants","systemName":"Plants","parent":null}},{"id":7,"name":"Outdoor plants","systemName":"OutdoorPlants","parent":{"id":5,"name":"Plants","systemName":"Plants","parent":null}},{"id":8,"name":"TVs","systemName":"Tvs","parent":{"id":1,"name":"Electronics","systemName":"Electronics","parent":null}},{"id":9,"name":"iPhone","systemName":"Iphone","parent":{"id":4,"name":"Mobile phones","systemName":"MobilePhones","parent":null}},{"id":10,"name":"Samsung","systemName":"Samsung","parent":{"id":4,"name":"Mobile phones","systemName":"MobilePhones","parent":null}}];
+        if (loading) {
+            let cb = function (success, response) {
+                if (success) {
+                    setCategories(response.data);
 
-        cat.forEach(element => {
-            if (element.parent != null) {
-                if (!hasChildrenList.includes(element.parent.id)) {
-                    hasChildrenList.push(element.parent.id);
+                    let hasChildrenList = [];
+
+                    response.data.forEach(element => {
+                        if (element.parent != null) {
+                            if (!hasChildrenList.includes(element.parent.id)) {
+                                hasChildrenList.push(element.parent.id);
+                            }
+                        }
+                    });
+
+                    setChildMap(hasChildrenList);
+                    setCategoriesInTable(response.data.filter((category) => category.parent == null));
                 }
-            }
-        });
+                setLoading(false);
+            };
 
-        setChildMap(hasChildrenList);
-        setCategories(cat);
-        setCategoriesInTable(cat.filter(a => {return a.parent == null }));
+            apiService.categories.list(cb, props.auth.accessToken);
+        }
 
-        // if (loading) {
-        //     let cb = function (success, response) {
-        //         if (success) {
-        //             setCategories(response.data)
+        // let hasChildrenList = [];
+        // let cat = [{"id":1,"name":"Electronics","systemName":"Electronics","parent":null},{"id":4,"name":"Mobile phones","systemName":"MobilePhones","parent":null},{"id":5,"name":"Plants","systemName":"Plants","parent":null},{"id":6,"name":"Indoor plants","systemName":"IndoorPlants","parent":{"id":5,"name":"Plants","systemName":"Plants","parent":null}},{"id":7,"name":"Outdoor plants","systemName":"OutdoorPlants","parent":{"id":5,"name":"Plants","systemName":"Plants","parent":null}},{"id":8,"name":"TVs","systemName":"Tvs","parent":{"id":1,"name":"Electronics","systemName":"Electronics","parent":null}},{"id":9,"name":"iPhone","systemName":"Iphone","parent":{"id":4,"name":"Mobile phones","systemName":"MobilePhones","parent":null}},{"id":10,"name":"Samsung","systemName":"Samsung","parent":{"id":4,"name":"Mobile phones","systemName":"MobilePhones","parent":null}}];
+
+        // cat.forEach(element => {
+        //     if (element.parent != null) {
+        //         if (!hasChildrenList.includes(element.parent.id)) {
+        //             hasChildrenList.push(element.parent.id);
         //         }
-        //         setLoading(false);
-        //     };
+        //     }
+        // });
 
-        //     apiService.categories.list(cb, props.auth.accessToken);
-        // }
+        // setChildMap(hasChildrenList);
+        // setCategories(cat);
+        // setCategoriesInTable(cat.filter(a => {return a.parent == null }));
     }, []);
 
     function categorySelection(id, type) {
@@ -71,20 +87,87 @@ export default function Categories(props) {
             setThirdTeirCategories(children);
 
             if (id === -1) {
-                setCategoriesInTable( categories.filter(a => {return a.parent != null && a.parent.id == activeMain}));
+                setCategoriesInTable(categories.filter(a => {return a.parent != null && a.parent.id == activeMain}));
             }
         }
+
+        resetAddNewCategoryForm();
+        setNewCategoryIsShown(false);
+        setIsInUpdateState(false);
     }
 
     function handleSubmit() {
         newCategory.parentId = activeIndex;
-        
-        console.log(newCategory)
         setNewCategory(baseNewCategoryObj);
+
+        let cb = function (success, response) {
+            if (success) {
+                if (newCategory.parentId != null) {
+                    newCategory.parent = {
+                        id: newCategory.parentId
+                    }
+                }
+
+                newCategory.id = response.id;
+
+                var joined = categories.concat(newCategory);
+                setCategories(joined);
+            }
+        };
+
+        if (newCategory.parentId === -1) {
+            newCategory.parentId = activeMain;
+        } else if (newCategory.parentId === 0) {
+            newCategory.parentId = null;
+        }
+
+        apiService.categories.add(newCategory, cb, props.auth.accessToken);
+    }
+
+    function handleUpdate() {
+        let cb = function (success, response) {
+            if (success) {
+                var joined = categories.concat(newCategory);
+                setCategories(joined);
+                setUpdateMessage("Update successful");
+            } else {
+                setUpdateMessage("Update failed");
+            }
+        };
+
+        apiService.categories.update(newCategory, cb, props.auth.accessToken);
     }
 
     function resetAddNewCategoryForm() {
         setNewCategory(baseNewCategoryObj);
+    }
+
+    function handleDeleteCategoryClick(id) {
+        if (id === 0 || id === -1) {
+            return;
+        }
+        
+        let hasNoChildren = categories.find((el, index) => el.parent != null && el.parent.id === id) == null;
+
+        if (hasNoChildren) {
+            let confirm = window.confirm("Are you sure you want to remove this?");
+
+            if (confirm) {
+                let cb = function (success, data) {
+                    if (success) {
+                        setCategories((state) => state.filter((category) => category.id != id));
+                        setCategoriesInTable((state) => state.filter((category) => category.id != id));
+                        setSecondTeirCategories((state) => state.filter((category) => category.id != id));
+                    }
+                };
+
+                apiService.categories.remove(id, cb, props.auth.accessToken);
+            } else {
+                console.log("not deleting: " + id);
+            }
+        } else {
+            alert("Cant delete category which still has children")
+        }
     }
 
     function handleNewCategoryFormInput(e, param) {
@@ -108,6 +191,22 @@ export default function Categories(props) {
         }
     }
 
+    function handleUpdateCategoryClick(id) {
+        setIsInUpdateState(true);
+        resetAddNewCategoryForm();
+        setNewCategoryIsShown(true);
+
+        let category = categories.find((el) => {return el.id == id});
+
+        setNewCategory({...newCategory, 
+            ['name']: category.name, 
+            ['systemName']: category.systemName,
+            ['id']: id,
+            ['description']: category.description ?? '',
+            ['parentId']: category.parent == null ? null : category.parent.id
+        });
+    }
+
     return (
         <div className={styles.categories}>
             <CategoriesNav
@@ -128,15 +227,17 @@ export default function Categories(props) {
             />}
             <div className={styles.main}>
                 <div style={{paddingBottom: 50, display: 'flex', justifyContent: 'space-between'}}>
-                <Button 
-                        innerText="Delete"
-                        type="danger"
-                        onClick={() => {console.log('going to remove: ' + activeIndex)}}
-                    />
+                    {isInUpdateState && <Button 
+                        innerText="Cancel"
+                        type="primary"
+                        onClick={() => {setNewCategoryIsShown(false); resetAddNewCategoryForm();}}
+                    />}
+
                     <Button 
                         innerText="Add new"
                         type="primary"
-                        onClick={() => {setNewCategoryIsShown(!newCategoryIsShown); resetAddNewCategoryForm();}}
+                        disabled={isInUpdateState}
+                        onClick={() => {if (isInUpdateState) return; setNewCategoryIsShown(!newCategoryIsShown); resetAddNewCategoryForm();}}
                     />
                 </div>
                 {newCategoryIsShown && <div className={styles.newCategoryForm}>
@@ -168,10 +269,11 @@ export default function Categories(props) {
                     </div>
                     <div>
                         <Button 
-                            innerText="Submit"
+                            innerText={`${isInUpdateState ? "Update" : "Submit"}`}
                             type="submit"
-                            onClick={handleSubmit}
+                            onClick={isInUpdateState ? handleUpdate : handleSubmit}
                         />
+                        {updateMessage != "" && <p className={styles.updateMessage}>{updateMessage}</p>}
                     </div>
                 </div>}
                 <div className={styles.categoryTable}>
@@ -187,7 +289,14 @@ export default function Categories(props) {
                             <div style={{width: '40%'}} className={styles.categoryTable__rowItem}>{category.name}</div>
                             <div style={{width: '45%'}} className={styles.categoryTable__rowItem}>{category.description}</div>
                             <div style={{width: '10%'}} className={styles.categoryTable__rowItem}>{index}</div>
-                            <div style={{width: '5%'}} className={styles.categoryTable__rowItem}><FontAwesomeIcon className={styles.icon} icon={faTrash}/></div>
+                            <div style={{width: '5%', display: 'flex', gridGap: 15}} className={styles.categoryTable__rowItem}>
+                                <FontAwesomeIcon className={styles.faSquare} icon={faPenToSquare} 
+                                        onClick={() => {handleUpdateCategoryClick(category.id)}}
+                                    />
+                                <FontAwesomeIcon className={styles.faTrash} icon={faTrash} 
+                                    onClick={() => {handleDeleteCategoryClick(category.id)}}
+                                />
+                            </div>
                         </div>
                     })}
                 </div>

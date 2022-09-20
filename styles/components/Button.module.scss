@@ -21,6 +21,12 @@
     &.danger {
         background-color: #dc3545;
         color: white;
-        
+    }
+
+    &.disabled {
+        background-color: #dddddd !important;
+        color: white;
+        box-shadow: none;
+        cursor: not-allowed;
     }
 }
