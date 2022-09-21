@@ -11,16 +11,73 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        min-height: 500px;
-        width: 500px;
+        min-height: 300px;
+        max-height: 650px;
+        min-width: 300px;
         background-color: white;
         border-radius: 6px;
         padding: 10px;
+        overflow: auto;
 
         .closeIcon {
             height: 25px;
             margin-left: auto;
             cursor: pointer;
+        }
+
+        .innerGroupWrapper {
+            display: flex;
+            grid-gap: 50px;
+
+            .imageUploader, .inputWrapper {
+                min-width: 250px;
+            }
+
+            .imageUploader {
+                margin-top: 20px;
+
+                .imageItem {
+                    display: flex;
+                    margin: 10px 0;
+                    justify-content: space-between;
+
+                    img {
+                        object-fit: contain;
+                    }
+
+                    button {
+                        background-color: lightgray;
+                        padding: 10px;
+                        border-radius: 6px;
+                        margin-bottom: 10px;
+                    }
+                }
+
+                .imageButtonWrapper {
+                    display: flex;
+                    grid-gap: 10px;
+                    flex-direction: column;
+                    overflow: auto;
+                    max-height: 500px;
+                    
+                    .mainButtons {
+                        display: flex;
+                        grid-gap: 10px;
+                    }
+                }
+
+                .btnWrapper {
+                    display: flex;
+                    flex-direction: column;
+                    margin-left: 10px;
+                }
+
+                button {
+                    background-color: lightgray;
+                    padding: 20px;
+                    border-radius: 6px;
+                }
+            }
         }
 
         .inputGroup {
