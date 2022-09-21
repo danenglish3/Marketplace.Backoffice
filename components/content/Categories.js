@@ -112,6 +112,7 @@ export default function Categories(props) {
 
                 var joined = categories.concat(newCategory);
                 setCategories(joined);
+                setCategoriesInTable((categoriesInTable) => [...categoriesInTable, newCategory]);
             }
         };
 
@@ -127,8 +128,18 @@ export default function Categories(props) {
     function handleUpdate() {
         let cb = function (success, response) {
             if (success) {
-                var joined = categories.concat(newCategory);
-                setCategories(joined);
+                let catArray = categories;
+                var joined = categories.concat(response.data);
+
+                let category = categories.find((el) => {return el.id == response.data.id});
+
+                let updated = {
+                    ...category, ...response.data
+                };
+
+                catArray[categories.indexOf(category)] = updated;
+
+                setCategories(catArray);
                 setUpdateMessage("Update successful");
             } else {
                 setUpdateMessage("Update failed");
@@ -230,7 +241,7 @@ export default function Categories(props) {
                     {isInUpdateState && <Button 
                         innerText="Cancel"
                         type="primary"
-                        onClick={() => {setNewCategoryIsShown(false); resetAddNewCategoryForm();}}
+                        onClick={() => {setNewCategoryIsShown(false); resetAddNewCategoryForm(); setIsInUpdateState(false);}}
                     />}
 
                     <Button 
