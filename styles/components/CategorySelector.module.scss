@@ -1,0 +1,44 @@
+.categorySelector {
+    .categorySelectorInput {
+        width: 100%;
+        border: 1px solid black;
+        height: 50px;
+        padding: 5px 10px;
+        cursor: pointer;
+        position: relative;
+
+        display: flex;
+        align-items: center;
+    }
+
+    .categorySelectorDropdown {
+        background-color: rgb(40,40,40);
+        color: white;
+
+        max-height: 200px;
+        overflow-y: scroll;
+        position: absolute;
+        z-index: 5;
+        width: 250px;
+
+            
+        .categoryHeader {
+            div {
+                padding: 12px 8px;
+                font-weight: bold;
+            }
+        }
+
+        .categoryItem {
+            div {
+                padding: 12px 8px;
+
+                &:hover {
+                    background-color: rgb(152, 152, 152);
+                    border-radius: 5px;
+                }
+            }
+        }
+    }
+}
+

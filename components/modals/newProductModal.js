@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState, useEffect } from 'react';
 import Button from '../button';
 import ImageUploading from "react-images-uploading";
+import apiService from '../../utils/apiService';
+import CategorySelector from '../categorySelector';
 
 export default function NewProductModal(props) {
     let baseNewProductObj = { 'title': '', 'description': '', 'condition': -1, 'price': -1 };
@@ -28,10 +30,30 @@ export default function NewProductModal(props) {
     }
 
     const onChange = (imageList, addUpdateIndex) => {
-        // data for submit
-        console.log(imageList, addUpdateIndex);
         setImages(imageList);
     };
+
+    function onSubmit() {
+        const cb = (success, response) => {
+            console.log(success)
+            console.log(response)
+        }
+
+        let fileObj = [];
+
+        images.forEach(image => {
+            let newObj = {
+                'data_url': image.data_url,
+                'name': image.file.name,
+                'size': image.file.size,
+                'type': image.file.type
+            };
+
+            fileObj.push(newObj);
+        });
+
+        apiService.products.add(newProduct, fileObj, cb, props.auth.accessToken);
+    }
 
     return (
         <div className={styles.newProductModal}>
@@ -58,6 +80,13 @@ export default function NewProductModal(props) {
                             />
                         </div>
                         <div className={styles.inputGroup}>
+                            <label htmlFor='category' style={{marginBottom: 10}}>Category</label>
+                            <CategorySelector
+                                auth={props.auth}
+                                id={'category'}
+                            />
+                        </div>
+                        <div className={styles.inputGroup}>
                             <label htmlFor='condition'>Condition</label>
                             <select 
                                 id='condition' 
@@ -69,7 +98,7 @@ export default function NewProductModal(props) {
                                 <option value={2}>{conditionMap[2]}</option>
                                 <option value={3}>{conditionMap[3]}</option>
                             </select>
-                        </div>                
+                        </div>
                         <div className={styles.inputGroup}>
                             <label htmlFor='price'>Price</label>
                             <input 
@@ -130,6 +159,7 @@ export default function NewProductModal(props) {
                 <Button
                     innerText="Submit"
                     type="submit"
+                    onClick={onSubmit}
                 />
             </div>
         </div>

@@ -25,7 +25,8 @@ export default function Products(props) {
                 onClick={() => toggleNewProductModal()}
             />
 
-            {newProductModalVisible && <NewProductModal 
+            {newProductModalVisible && <NewProductModal
+                auth={props.auth} 
                 closeModalCallback={closeModalCallback}
             />}
         </div>
