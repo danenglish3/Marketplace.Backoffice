@@ -8,9 +8,11 @@ import apiService from '../../utils/apiService';
 import CategorySelector from '../categorySelector';
 
 export default function NewProductModal(props) {
-    let baseNewProductObj = { 'title': '', 'description': '', 'condition': -1, 'price': -1 };
-    const [newProduct, setNewProduct] = useState({});
+    let baseNewProductObj = { 'name': '', 'description': '', 'category': -1, 'condition': 0, 'price': -1 };
+    const [newProduct, setNewProduct] = useState(baseNewProductObj);
     const [images, setImages] = React.useState([]);
+    const [isFreeProduct, setIsFreeProduct] = useState(newProduct.category === 21);
+    const [errorFields, setErrorFields] = useState([]);
     const maxNumber = 10;
 
     let conditionMap = {
@@ -22,7 +24,12 @@ export default function NewProductModal(props) {
 
     useEffect(() => {
         console.log(newProduct)
+        console.log(images)
     }, [newProduct]);
+
+    function closeModal() {
+        
+    }
 
     function handleNewProductFormInput(e, name) {
         let value = e.target.value;
@@ -33,7 +40,47 @@ export default function NewProductModal(props) {
         setImages(imageList);
     };
 
+    const categorySelectChange = (id, name) => {
+        if (id === 21) {
+            setNewProduct({...newProduct, 'price': 0, 'category': id});
+        } else {
+            setNewProduct({...newProduct, 'category': id});
+        }
+    }
+
+    function validateForm() {
+        let errors = [];
+
+        if (newProduct.name == '') {
+            errors.push('name');
+        }
+
+        if (newProduct.description == '') {
+            errors.push('description');
+        }
+
+        if (newProduct.category == -1) {
+            errors.push('category');
+        }
+
+        if (newProduct.condition < 0 || newProduct.condition > 3 ) {
+            errors.push('condition');
+        }
+
+        if (!isFreeProduct && newProduct.price <= 0) {
+            errors.push('price');
+        }
+
+        setErrorFields(errors);
+
+        return errors.length === 0;
+    }
+
     function onSubmit() {
+        if (!validateForm()) {
+            return;
+        }
+
         const cb = (success, response) => {
             console.log(success)
             console.log(response)
@@ -63,15 +110,15 @@ export default function NewProductModal(props) {
                 />
                 <div className={styles.innerGroupWrapper}>
                     <div className={styles.inputWrapper}>
-                        <div className={styles.inputGroup}>
-                            <label htmlFor='title'>Title</label>
+                        <div className={`${styles.inputGroup} ${!errorFields.includes('name') ? '' : styles.required}`} >
+                            <label htmlFor='name'>Name</label>
                             <input 
-                                id='title' 
+                                id='name' 
                                 onChange={() => handleNewProductFormInput(event, 'name')} 
                                 value={newProduct.name}
                             />
                         </div>
-                        <div className={styles.inputGroup}>
+                        <div className={`${styles.inputGroup} ${!errorFields.includes('description') ? '' : styles.required}`} >
                             <label htmlFor='description'>Description</label>
                             <textarea 
                                 id='description' 
@@ -79,14 +126,15 @@ export default function NewProductModal(props) {
                                 value={newProduct.description}
                             />
                         </div>
-                        <div className={styles.inputGroup}>
+                        <div className={`${styles.inputGroup} ${!errorFields.includes('category') ? '' : styles.required}`} >
                             <label htmlFor='category' style={{marginBottom: 10}}>Category</label>
                             <CategorySelector
                                 auth={props.auth}
                                 id={'category'}
+                                onChange={categorySelectChange}
                             />
                         </div>
-                        <div className={styles.inputGroup}>
+                        <div className={`${styles.inputGroup} ${!errorFields.includes('condition') ? '' : styles.required}`} >
                             <label htmlFor='condition'>Condition</label>
                             <select 
                                 id='condition' 
@@ -99,7 +147,7 @@ export default function NewProductModal(props) {
                                 <option value={3}>{conditionMap[3]}</option>
                             </select>
                         </div>
-                        <div className={styles.inputGroup}>
+                        <div className={`${styles.inputGroup} ${!errorFields.includes('price') ? '' : styles.required}`} >
                             <label htmlFor='price'>Price</label>
                             <input 
                                 id='price'
@@ -107,6 +155,7 @@ export default function NewProductModal(props) {
                                 min={0}
                                 onChange={() => handleNewProductFormInput(event, 'price')} 
                                 value={newProduct.price}
+                                disabled={isFreeProduct}
                             />
                         </div> 
                     </div>
@@ -117,7 +166,7 @@ export default function NewProductModal(props) {
                             onChange={onChange}
                             maxNumber={maxNumber}
                             dataURLKey="data_url"
-                            acceptType={["jpg"]}
+                            acceptType={["jpg", "jpeg", "png"]}
                         >
                             {({
                                 imageList,

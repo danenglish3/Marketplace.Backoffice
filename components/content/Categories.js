@@ -8,7 +8,6 @@ import { faMinus } from '@fortawesome/free-solid-svg-icons'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 import Button from '../button';
-import { Input, stringify } from 'postcss';
 
 export default function Categories(props) {
     let baseNewCategoryObj = { 'name': '', 'systemName': '', 'description': '', 'parentId': 0 };

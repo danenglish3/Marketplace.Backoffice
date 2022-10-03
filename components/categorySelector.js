@@ -45,6 +45,7 @@ export default function CategorySelector(props) {
     function handleSelect(id, name) {
         setCategoryInputVal(name);
         toggleDropdown();
+        props.onChange(id, name);
     }
 
     return (

@@ -98,6 +98,12 @@
                 height: 50px;
                 padding: 5px 10px;
             }
+
+            &.required {
+                input, textarea, select {
+                    border: 1px solid red;
+                }
+            }
         }
     }
 }
