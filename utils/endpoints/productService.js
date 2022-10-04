@@ -3,6 +3,16 @@ async function add(product, photos, cb, token) {
     request(requestOptions, '', cb);
 }
 
+async function list(cb, options, token) {
+    const requestOptions = generateRequestOptions(requestType.post, token, options);
+    request(requestOptions, 'list', cb);
+}
+
+async function getListLength(cb, options, token) {
+    const requestOptions = generateRequestOptions(requestType.post, token, options);
+    request(requestOptions, 'list-length', cb);
+}
+
 async function request(requestOptions, pathSegment, cb, params) {
     await fetch(generateURL(pathSegment, params), requestOptions)
     .then(response => response.json())
@@ -44,7 +54,9 @@ const requestType = {
 }
 
 let productService = {
-    add: add
+    add: add,
+    list: list,
+    getListLength: getListLength
 }
 
 export default productService;

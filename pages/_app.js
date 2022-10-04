@@ -33,6 +33,7 @@ function Backoffice({ Component, pageProps }) {
                 } else {
 					function generateTokenCallback(generateSuccess, data) {
 						if (generateSuccess) {
+							console.log(data.accessToken)
 							pageProps.auth.setAccessToken(data.accessToken);
 						} else {
 							debugger;

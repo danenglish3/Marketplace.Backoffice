@@ -1,9 +1,9 @@
 import styles from '../../styles/components/content/Products.module.scss'
-
 import Button from '../button'
 import React, { useState, useEffect } from 'react';
 import apiService from '../../utils/apiService';
 import NewProductModal from '../modals/newProductModal';
+import ProductList from './ProductList';
 
 export default function Products(props) {
     const [newProductModalVisible, setNewProductModalVisible] = useState(false);
@@ -18,7 +18,6 @@ export default function Products(props) {
 
     return (
         <div className={styles.products}>
-            Products
             <Button
                 innerText="Add new"
                 type="primary"
@@ -29,6 +28,10 @@ export default function Products(props) {
                 auth={props.auth} 
                 closeModalCallback={closeModalCallback}
             />}
+
+            <ProductList
+                auth={props.auth}
+            />
         </div>
     )
 }
