@@ -25,4 +25,15 @@
             margin-right: 25px;
         }
     }
+
+    .photoRow {
+        display: flex;
+        padding: 12px 48px;
+        grid-gap: 12px;
+
+        img {
+            width: 100px;
+            object-fit: cover;
+        }
+    }
 }

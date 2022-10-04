@@ -15,7 +15,7 @@ export default function NewProductModal(props) {
     const [errorFields, setErrorFields] = useState([]);
     const maxNumber = 10;
 
-    let conditionMap = {
+    const conditionMap = {
         0: 'New',
         1: 'Like new',
         2: 'Used',

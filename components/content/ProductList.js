@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import styles from '../../styles/components/content/Products.module.scss'
 import Button from '../button';
+import constants from '../../utils/constants';
 
 export default function ProductList(props) {
     const [data, setData] = useState([]);
@@ -12,6 +13,7 @@ export default function ProductList(props) {
 	const [totalRows, setTotalRows] = useState(0);
 	const [offset, setOffSet] = useState(0);
 	const [pageSize, setPageSize] = useState(50);
+	const [emailSearchTerm, setEmailSearchTerm] = useState("");
 
     function formatDataForRows(list) {
         let elements = [];
@@ -21,7 +23,10 @@ export default function ProductList(props) {
                 'id': el.id,
                 'name': el.name,
                 'description': el.description,
-                'price': el.price
+                'price': el.price,
+                'condition': constants.conditionMap[el.condition],
+                'status': constants.productStatus[el.statusDetail?.productStatus ?? -1],
+                'photos': el.photos
             });    
         });
 
@@ -29,10 +34,16 @@ export default function ProductList(props) {
     }
 
     function createRequestBodyObj() {
-        return {
+        let obj = {
             'offSet': offset,
             'pageSize': pageSize,
         }
+
+        if (emailSearchTerm != "") {
+            obj.userEmail = emailSearchTerm;
+        }
+
+        return obj; 
     }
 
     const fetchProductsListCount = async () => {
@@ -53,6 +64,7 @@ export default function ProductList(props) {
         let cb = function (success, response) {
             if (success) {
                 formatDataForRows(response.data);
+                setData(...data, response.data);
             } else {
 
             }
@@ -80,19 +92,45 @@ export default function ProductList(props) {
                 name: 'Price',
                 selector: row => row.price,
             },
+            {
+                name: 'Condition',
+                selector: row => row.condition
+            },
+            {
+                name: 'Status',
+                selector: row => row.status
+            }
         ])
 	}, []);
+
+    function inputChange(e, input) {
+        setEmailSearchTerm(e.target.value);
+    }
+
+    function submitSearch() {
+		fetchProducts();	
+        fetchProductsListCount();	
+    }
+
+    function handleInputKeyDown(e) {
+        if (e.key === 'Enter') {
+            submitSearch();
+        }
+    }
 
     return (
         <div>
             <div className={styles.tableSearch}>
                 <label>Email: </label>
-                <input />
+                <input 
+                    onChange={() => inputChange(event, 'email')}
+                    onKeyDown={() => handleInputKeyDown(event)}
+                />
 
                 <Button 
                     innerText="Search"
                     type="submit"
-                    onclick={() => {}}
+                    onClick={submitSearch}
                 />
             </div>
 
@@ -104,10 +142,16 @@ export default function ProductList(props) {
                 pagination
                 paginationServer
                 paginationTotalRows={totalRows}
-                selectableRows
                 highlightOnHover
                 pointerOnHover
+                expandableRows 
+                expandableRowsComponent={ExpandedComponent}
             />            
         </div>
     )
 }
+
+const ExpandedComponent = ({ data }) => 
+    <div className={styles.photoRow}>{data.photos.map((photo) => {
+        return <img key={photo.id} src={process.env.NEXT_PUBLIC_ASSET_BASE_URL + photo.guid}></img>})}
+    </div>
