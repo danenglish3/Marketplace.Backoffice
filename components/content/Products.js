@@ -29,9 +29,13 @@ export default function Products(props) {
                 closeModalCallback={closeModalCallback}
             />}
 
-            <ProductList
-                auth={props.auth}
-            />
+            <div
+                className={styles.tableWrapper}
+            >
+                <ProductList
+                    auth={props.auth}
+                />    
+            </div>
         </div>
     )
 }

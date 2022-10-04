@@ -1,3 +1,28 @@
 .products {
-    
+    height: 100%;
+    width: 100%;
+    padding: 50px;
+
+    .tableWrapper {
+        margin-top: 50px;
+    }
+
+    .tableSearch {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        label {
+            font-weight: 500;
+            margin-right: 25px;
+        }
+
+        input {
+            border: 1px solid black;
+            border-radius: 25px;
+            height: 50px;
+            padding: 5px 10px;
+            margin-right: 25px;
+        }
+    }
 }

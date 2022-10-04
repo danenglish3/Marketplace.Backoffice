@@ -1,6 +1,8 @@
 import apiService from '../../utils/apiService';
 import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
+import styles from '../../styles/components/content/Products.module.scss'
+import Button from '../button';
 
 export default function ProductList(props) {
     const [data, setData] = useState([]);
@@ -30,7 +32,6 @@ export default function ProductList(props) {
         return {
             'offSet': offset,
             'pageSize': pageSize,
-            'userId': 18
         }
     }
 
@@ -83,14 +84,30 @@ export default function ProductList(props) {
 	}, []);
 
     return (
-        <DataTable
-            title="Products"
-            progressPending={loading}
-            columns={columns}
-            data={rows}
-            pagination
-            paginationServer
-            paginationTotalRows={totalRows}
-        />
+        <div>
+            <div className={styles.tableSearch}>
+                <label>Email: </label>
+                <input />
+
+                <Button 
+                    innerText="Search"
+                    type="submit"
+                    onclick={() => {}}
+                />
+            </div>
+
+            <DataTable
+                title="Products"
+                progressPending={loading}
+                columns={columns}
+                data={rows}
+                pagination
+                paginationServer
+                paginationTotalRows={totalRows}
+                selectableRows
+                highlightOnHover
+                pointerOnHover
+            />            
+        </div>
     )
 }
